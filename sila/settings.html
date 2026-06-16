@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAMALI MD | Bot Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#0a0c14;font-family:'Inter',sans-serif;color:#fff;padding:20px}
+        .container{max-width:700px;margin:0 auto}
+        .glass-card{background:rgba(12,15,30,0.6);backdrop-filter:blur(12px);border-radius:28px;border:1px solid rgba(0,246,255,0.2);padding:30px}
+        h2{margin-bottom:25px;color:#00f6ff}
+        .setting{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #1f2330}
+        .toggle{position:relative;display:inline-block;width:50px;height:24px}
+        .toggle input{opacity:0;width:0;height:0}
+        .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#333;border-radius:34px}
+        .slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background-color:#fff;border-radius:50%;transition:0.2s}
+        input:checked+.slider{background:linear-gradient(135deg,#00f6ff,#b400ff)}
+        input:checked+.slider:before{transform:translateX(26px)}
+        button{background:linear-gradient(95deg,#00c6fb,#005bea);border:none;border-radius:60px;padding:12px;font-weight:600;color:#fff;cursor:pointer;width:100%;margin-top:20px}
+        .back{position:fixed;top:20px;left:20px;background:rgba(0,0,0,0.5);padding:8px 16px;border-radius:40px;text-decoration:none;color:#fff}
+    </style>
+</head>
+<body>
+<a href="/dashboard" class="back"><i class="fas fa-arrow-left"></i> Back</a>
+<div class="container">
+    <div class="glass-card">
+        <h2><i class="fas fa-user-cog"></i> Bot‑Specific Settings <span id="botNumberDisplay"></span></h2>
+        <div id="settingsForm"></div>
+        <button onclick="saveSettings()">Save for this bot</button>
+    </div>
+</div>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const botNumber = params.get('number') || '';
+    document.getElementById('botNumberDisplay').innerText = botNumber ? `(${botNumber})` : '(No bot selected)';
+
+    async function load() {
+        if (!botNumber) {
+            document.getElementById('settingsForm').innerHTML = '<p>No bot number specified. Go back and select a bot from dashboard.</p>';
+            return;
+        }
+        let res = await fetch(`/api/config?number=${botNumber}`);
+        let cfg = await res.json();
+        const fields = [
+            {key:'AUTO_VIEW_STATUS', label:'Auto View Status'},
+            {key:'AUTO_LIKE_STATUS', label:'Auto Like Status'},
+            {key:'AUTO_REPLY_ENABLE', label:'Auto Reply'},
+            {key:'ANTI_CALL', label:'Anti-Call'},
+            {key:'ANTI_DELETE', label:'Anti-Delete'},
+            {key:'READ_MESSAGE', label:'Read Receipts'},
+            {key:'AUTO_TYPING', label:'Auto Typing'},
+            {key:'AUTO_RECORDING', label:'Auto Recording'}
+        ];
+        let html = '';
+        fields.forEach(f => {
+            let checked = cfg[f.key] === 'true';
+            html += `<div class="setting">
+                        <span>${f.label}</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="${f.key}" ${checked ? 'checked' : ''}>
+                            <span class="slider"></span>
+                        </label>
+                    </div>`;
+        });
+        document.getElementById('settingsForm').innerHTML = html;
+    }
+
+    async function saveSettings() {
+        if (!botNumber) return;
+        let updates = {};
+        const keys = ['AUTO_VIEW_STATUS','AUTO_LIKE_STATUS','AUTO_REPLY_ENABLE','ANTI_CALL','ANTI_DELETE','READ_MESSAGE','AUTO_TYPING','AUTO_RECORDING'];
+        keys.forEach(k => { updates[k] = document.getElementById(k).checked ? 'true' : 'false'; });
+        let res = await fetch('/api/config/update', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ number: botNumber, config: updates })
+        });
+        alert(res.ok ? 'Saved!' : 'Error');
+    }
+    load();
+</script>
+</body>
+</html>

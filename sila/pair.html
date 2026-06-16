@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>JAMALI MD | Pair (Server 1-5)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:radial-gradient(circle at 10% 20%,#050b1a,#010105);font-family:'Inter',sans-serif;color:#fff;padding:20px}
+        .container{max-width:1200px;margin:0 auto}
+        h1{text-align:center;margin-bottom:20px;background:linear-gradient(135deg,#00f6ff,#b400ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+        .servers-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px}
+        .server-card{background:rgba(12,15,30,0.6);backdrop-filter:blur(12px);border-radius:24px;border:1px solid rgba(0,246,255,0.2);padding:20px}
+        .server-title{font-size:1.2rem;font-weight:600;margin-bottom:15px;color:#00f6ff}
+        input{width:100%;background:#05080f;border:1px solid #2a2f50;border-radius:60px;padding:12px;color:#fff;margin:10px 0}
+        button{background:linear-gradient(95deg,#00c6fb,#005bea);border:none;border-radius:60px;padding:10px;font-weight:600;color:#fff;cursor:pointer;width:100%}
+        .code-box{background:#000000aa;border-radius:20px;padding:12px;text-align:center;margin:10px 0;cursor:pointer}
+        .code{font-size:1.1rem;letter-spacing:2px;color:#b400ff}
+        .status{font-size:0.75rem;text-align:center;margin-top:8px}
+        .online{color:#0f0}
+        .offline{color:#f66}
+        .footer{text-align:center;margin-top:40px;opacity:0.6}
+        .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:#111;padding:10px 20px;border-radius:40px;transition:0.3s;z-index:1000}
+        .toast.show{transform:translateX(-50%) translateY(0)}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1><i class="fas fa-server"></i> JAMALI MD • PAIR (Server 1-5)</h1>
+    <div class="servers-grid" id="serversGrid"></div>
+    <div class="footer">Powered by JAMALI TECH TZ | Secure Pairing | Server 1-5</div>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+    const TOTAL_SERVERS = 5;
+    const ADMIN_PASSWORD = "JAMALI2026";
+    let serverStatus = {};
+
+    function showToast(msg, type='info') {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.style.borderLeftColor = type === 'error' ? '#ff4444' : '#00f6ff';
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    async function checkStatus(serverNum, number) {
+        if (!number || number.length < 9) return;
+        try {
+            const res = await fetch(`/status?number=${number}`);
+            const data = await res.json();
+            serverStatus[serverNum] = data.isConnected ? 'connected' : 'disconnected';
+            const statusDiv = document.getElementById(`status-${serverNum}`);
+            if (statusDiv) {
+                statusDiv.innerHTML = serverStatus[serverNum] === 'connected' ? '<span class="online">✅ CONNECTED</span>' : '<span class="offline">❌ NOT CONNECTED</span>';
+            }
+        } catch(e) { serverStatus[serverNum] = 'offline'; }
+    }
+
+    async function generateCode(serverNum, number) {
+        if (!number || number.length < 9) {
+            showToast(`Server ${serverNum}: Invalid number`, 'error');
+            return;
+        }
+        const codeDiv = document.getElementById(`code-${serverNum}`);
+        const btn = document.getElementById(`btn-${serverNum}`);
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> ...';
+        codeDiv.innerText = '⏳';
+        try {
+            const res = await fetch(`/code?number=${number}`);
+            const data = await res.json();
+            if (data.code) {
+                codeDiv.innerText = data.code;
+                showToast(`Server ${serverNum}: Code generated`, 'success');
+                setTimeout(() => checkStatus(serverNum, number), 3000);
+            } else if (data.status === 'already_connected') {
+                codeDiv.innerText = 'ALREADY ACTIVE';
+                serverStatus[serverNum] = 'connected';
+                const statusDiv = document.getElementById(`status-${serverNum}`);
+                if (statusDiv) statusDiv.innerHTML = '<span class="online">✅ CONNECTED</span>';
+                showToast(`Server ${serverNum}: Already connected`, 'error');
+            } else {
+                codeDiv.innerText = 'FAILED';
+                showToast(`Server ${serverNum}: Failed`, 'error');
+            }
+        } catch(err) {
+            codeDiv.innerText = 'ERROR';
+            showToast(`Server ${serverNum}: Network error`, 'error');
+        }
+        btn.disabled = false;
+        btn.innerHTML = 'GENERATE';
+    }
+
+    function copyCode(serverNum) {
+        const code = document.getElementById(`code-${serverNum}`).innerText;
+        if (code && !['——', '⏳', 'FAILED', 'ERROR', 'ALREADY ACTIVE'].includes(code)) {
+            navigator.clipboard.writeText(code);
+            showToast(`Server ${serverNum}: Code copied`);
+        } else {
+            showToast(`Server ${serverNum}: No valid code`, 'error');
+        }
+    }
+
+    function renderServers() {
+        const grid = document.getElementById('serversGrid');
+        let html = '';
+        for (let i = 1; i <= TOTAL_SERVERS; i++) {
+            html += `
+                <div class="server-card">
+                    <div class="server-title"><i class="fas fa-microchip"></i> SERVER ${i}</div>
+                    <input type="tel" id="number-${i}" placeholder="WhatsApp number (e.g., 255784062158)" value="255">
+                    <button class="btn-neon" id="btn-${i}" onclick="generateCode(${i}, document.getElementById('number-${i}').value.replace(/\\D/g,''))">GENERATE</button>
+                    <div class="code-box" onclick="copyCode(${i})">
+                        <div class="code" id="code-${i}">—— —— ——</div>
+                        <div style="font-size:0.7rem">tap to copy</div>
+                    </div>
+                    <div class="status" id="status-${i}">⚪ NOT PAIRED</div>
+                </div>
+            `;
+        }
+        grid.innerHTML = html;
+        for (let i = 1; i <= TOTAL_SERVERS; i++) {
+            const input = document.getElementById(`number-${i}`);
+            input.addEventListener('change', () => {
+                const num = input.value.replace(/\D/g, '');
+                if (num.length >= 9) checkStatus(i, num);
+                else document.getElementById(`status-${i}`).innerHTML = '<span class="offline">⚠️ INVALID</span>';
+            });
+        }
+    }
+
+    renderServers();
+</script>
+</body>
+</html>

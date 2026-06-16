@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAMALI MD | Global Config</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#0a0c14;font-family:'Inter',sans-serif;color:#fff;padding:20px}
+        .container{max-width:700px;margin:0 auto}
+        .glass-card{background:rgba(12,15,30,0.6);backdrop-filter:blur(12px);border-radius:28px;border:1px solid rgba(0,246,255,0.2);padding:30px}
+        h2{margin-bottom:25px;color:#00f6ff;display:flex;align-items:center;gap:10px}
+        .form-group{margin-bottom:20px}
+        label{display:block;margin-bottom:8px;font-weight:500}
+        input,select{width:100%;background:#05080f;border:1px solid #2a2f50;border-radius:40px;padding:12px 20px;color:#fff}
+        button{background:linear-gradient(95deg,#00c6fb,#005bea);border:none;border-radius:60px;padding:12px;font-weight:600;color:#fff;cursor:pointer;width:100%}
+        .back{position:fixed;top:20px;left:20px;background:rgba(0,0,0,0.5);padding:8px 16px;border-radius:40px;text-decoration:none;color:#fff}
+    </style>
+</head>
+<body>
+<a href="/dashboard" class="back"><i class="fas fa-arrow-left"></i> Back</a>
+<div class="container">
+    <div class="glass-card">
+        <h2><i class="fas fa-sliders-h"></i> Global Configuration</h2>
+        <div class="form-group"><label>Bot Prefix</label><input type="text" id="prefix" placeholder="." value="."></div>
+        <div class="form-group"><label>Work Mode</label><select id="workType"><option>public</option><option>private</option><option>groups</option><option>inbox</option></select></div>
+        <div class="form-group"><label>Auto View Status</label><select id="autoView"><option>true</option><option>false</option></select></div>
+        <div class="form-group"><label>Auto Like Status</label><select id="autoLike"><option>true</option><option>false</option></select></div>
+        <div class="form-group"><label>Auto Reply</label><select id="autoReply"><option>true</option><option>false</option></select></div>
+        <div class="form-group"><label>Anti-Call</label><select id="antiCall"><option>false</option><option>true</option></select></div>
+        <div class="form-group"><label>Anti-Delete</label><select id="antiDelete"><option>false</option><option>true</option></select></div>
+        <button onclick="saveConfig()">Save Configuration</button>
+    </div>
+</div>
+<script>
+    async function load() {
+        let res = await fetch('/api/config/global');
+        let cfg = await res.json();
+        document.getElementById('prefix').value = cfg.PREFIX || '.';
+        document.getElementById('workType').value = cfg.WORK_TYPE || 'public';
+        document.getElementById('autoView').value = cfg.AUTO_VIEW_STATUS || 'true';
+        document.getElementById('autoLike').value = cfg.AUTO_LIKE_STATUS || 'true';
+        document.getElementById('autoReply').value = cfg.AUTO_REPLY_ENABLE || 'true';
+        document.getElementById('antiCall').value = cfg.ANTI_CALL || 'false';
+        document.getElementById('antiDelete').value = cfg.ANTI_DELETE || 'false';
+    }
+    async function saveConfig() {
+        let payload = {
+            PREFIX: document.getElementById('prefix').value,
+            WORK_TYPE: document.getElementById('workType').value,
+            AUTO_VIEW_STATUS: document.getElementById('autoView').value,
+            AUTO_LIKE_STATUS: document.getElementById('autoLike').value,
+            AUTO_REPLY_ENABLE: document.getElementById('autoReply').value,
+            ANTI_CALL: document.getElementById('antiCall').value,
+            ANTI_DELETE: document.getElementById('antiDelete').value
+        };
+        let res = await fetch('/api/config/global', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify(payload)
+        });
+        alert(res.ok ? 'Saved!' : 'Error');
+    }
+    load();
+</script>
+</body>
+</html>

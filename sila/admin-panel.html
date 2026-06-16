@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAMALI MD | Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#0a0c14;font-family:'Inter',sans-serif;color:#fff;padding:20px}
+        .container{max-width:1400px;margin:0 auto}
+        .glass-card{background:rgba(12,15,30,0.6);backdrop-filter:blur(12px);border-radius:28px;border:1px solid rgba(0,246,255,0.2);padding:24px;margin-bottom:25px}
+        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:20px}
+        .stat-card{background:#0f1222;border-radius:24px;padding:20px;text-align:center}
+        .stat-value{font-size:2.5rem;color:#00f6ff}
+        button{background:linear-gradient(95deg,#00c6fb,#005bea);border:none;border-radius:60px;padding:10px 20px;font-weight:600;color:#fff;cursor:pointer;margin-right:10px}
+        .btn-outline{background:transparent;border:1px solid #00f6ff}
+        table{width:100%;border-collapse:collapse}
+        th,td{padding:12px;text-align:left;border-bottom:1px solid #1f2330}
+        th{color:#00f6ff}
+        .login-box{max-width:400px;margin:100px auto;background:#121520;border-radius:28px;padding:30px}
+        input{width:100%;background:#05080f;border:1px solid #2a2f50;border-radius:40px;padding:12px;margin-bottom:15px;color:#fff}
+        @media(max-width:700px){.stats{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+    const ADMIN_USER = "Jamalitz";
+    const ADMIN_PASS = "JAMALITECH@@@1234";
+    let authenticated = false;
+
+    async function fetchSessions() {
+        try { let r=await fetch('/active'); let d=await r.json(); return d.numbers || []; } catch(e){ return []; }
+    }
+    async function fetchUptime(num) {
+        try { let r=await fetch(`/status?number=${num}`); let d=await r.json(); return (d.uptime||0)+'s'; } catch(e){ return '--'; }
+    }
+    async function render() {
+        if(!authenticated){
+            document.getElementById('app').innerHTML = `
+                <div class="login-box"><h2>Admin Login</h2><input type="text" id="admUser" placeholder="Username"><input type="password" id="admPass" placeholder="Password"><button id="loginBtn">LOGIN</button></div>
+            `;
+            document.getElementById('loginBtn').onclick = () => {
+                let u = document.getElementById('admUser').value;
+                let p = document.getElementById('admPass').value;
+                if(u===ADMIN_USER && p===ADMIN_PASS) { authenticated=true; render(); }
+                else alert('Wrong credentials');
+            };
+            return;
+        }
+        let sessions = await fetchSessions();
+        let stats = `<div class="stats"><div class="stat-card"><div class="stat-value">${sessions.length}</div><div>Total Bots</div></div><div class="stat-card"><div class="stat-value">${sessions.length}</div><div>Active</div></div></div>`;
+        let rows = '';
+        for(let num of sessions){
+            let uptime = await fetchUptime(num);
+            rows += `<tr><td>${num}</td><td><span style="color:#0f0">● ONLINE</span></td><td>${uptime}</td><td><button class="btn-outline" onclick="togglePremium('${num}')">Premium</button></td><td><button onclick="disconnectNum('${num}')">Disconnect</button></td></tr>`;
+        }
+        if(rows==='') rows = '<tr><td colspan="5">No bots connected</td></tr>';
+        document.getElementById('app').innerHTML = `
+            <div class="container">
+                ${stats}
+                <div class="glass-card">
+                    <div style="margin-bottom:15px"><button onclick="reconnectAll()">Reconnect All</button><button class="btn-outline" onclick="disconnectAll()">Disconnect All</button></div>
+                    <table><thead><tr><th>Number</th><th>Status</th><th>Uptime</th><th>Premium</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>
+                </div>
+            </div>
+        `;
+    }
+    window.disconnectNum = async (num) => { if(confirm(`Disconnect ${num}?`)){ await fetch(`/disconnect?number=${num}`); render(); } };
+    window.reconnectAll = async () => { await fetch('/connect-all'); alert('Reconnecting...'); setTimeout(render,3000); };
+    window.disconnectAll = async () => { if(confirm('Disconnect ALL bots?')){ await fetch('/disconnect-all'); render(); } };
+    window.togglePremium = async (num) => {
+        try {
+            let res = await fetch(`/api/config?number=${num}`);
+            let cfg = await res.json();
+            let newPremium = cfg.premium==='true'?'false':'true';
+            await fetch('/api/config/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({number:num,config:{premium:newPremium}})});
+            alert(`Premium ${newPremium==='true'?'enabled':'disabled'} for ${num}`);
+            render();
+        } catch(e){ alert('Error'); }
+    };
+    render();
+</script>
+</body>
+</html>
