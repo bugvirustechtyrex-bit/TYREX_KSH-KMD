@@ -1,0 +1,225 @@
+const { cmd, commands } = require('../momy');
+
+// Define combined fakevCard (JAMALI MD)
+const fakevCard = {
+  key: {
+    fromMe: false,
+    participant: "0@s.whatsapp.net",
+    remoteJid: "status@broadcast"
+  },
+  message: {
+    contactMessage: {
+      displayName: "© JAMALI MD",
+      vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:JAMALI MD BOT\nORG:JAMALI TECH TZ;\nTEL;type=CELL;type=VOICE;waid=255784062158:+255784062158\nEND:VCARD`
+    }
+  }
+};
+
+const getContextInfo = (m) => {
+    return {
+        mentionedJid: [m.sender],
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+            newsletterJid: '120363425061263455@newsletter',
+            newsletterName: 'JAMALI MD',
+            serverMessageId: 143,
+        },
+    };
+};
+
+// Stylized characters for reaction
+const stylizedChars = {
+    a: '🅐', b: '🅑', c: '🅒', d: '🅓', e: '🅔', f: '🅕', g: '🅖',
+    h: '🅗', i: '🅘', j: '🅙', k: '🅚', l: '🅛', m: '🅜', n: '🅝',
+    o: '🅞', p: '🅟', q: '🅠', r: '🅡', s: '🅢', t: '🅣', u: '🅤',
+    v: '🅥', w: '🅦', x: '🅧', y: '🅨', z: '🅩',
+    '0': '⓿', '1': '➊', '2': '➋', '3': '➌', '4': '➍',
+    '5': '➎', '6': '➏', '7': '➐', '8': '➑', '9': '➒'
+};
+
+cmd({
+    pattern: "ch",
+    alias: ["channel", "chreact", "newsletter"],
+    react: "📢",
+    desc: "React to channel messages with stylized text",
+    category: "owner",
+    filename: __filename
+},
+async(conn, mek, m, {from, prefix, l, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
+try{
+    // Owner check
+    if (!isOwner) {
+        return await conn.sendMessage(from, {
+            text: `❌ This command is only for bot owner`,
+            contextInfo: getContextInfo({ sender: sender })
+        }, { quoted: fakevCard });
+    }
+    
+    if (!q) {
+        return await conn.sendMessage(from, {
+            text: `┏━❑ CHANNEL REACTION ━━━━━━━━
+┃ 📢 React to channel messages
+┃ ━━━━━━━━━━━━━━━━━━━━━━
+┃ Usage:
+┃ • ${prefix}ch <channel-link> <text>
+┃ ━━━━━━━━━━━━━━━━━━━━━━
+┃ Example:
+┃ • ${prefix}ch https://whatsapp.com/channel/1234567890 hello
+┃ • ${prefix}ch https://whatsapp.com/channel/1234567890 jamali
+┗━━━━━━━━━━━━━━━━━━━━━━━━`,
+            contextInfo: getContextInfo({ sender: sender })
+        }, { quoted: fakevCard });
+    }
+    
+    const [link, ...textParts] = q.split(' ');
+    
+    // Validate channel link
+    if (!link.includes("whatsapp.com/channel/")) {
+        return await conn.sendMessage(from, {
+            text: `❌ Invalid channel link format\n\nLink must contain: whatsapp.com/channel/`,
+            contextInfo: getContextInfo({ sender: sender })
+        }, { quoted: fakevCard });
+    }
+    
+    // Validate text
+    const inputText = textParts.join(' ').toLowerCase();
+    if (!inputText) {
+        return await conn.sendMessage(from, {
+            text: `❌ Please provide text to convert to reaction`,
+            contextInfo: getContextInfo({ sender: sender })
+        }, { quoted: fakevCard });
+    }
+    
+    // Convert text to stylized emoji
+    const emoji = inputText
+        .split('')
+        .map(char => {
+            if (char === ' ') return '―';
+            if (char === '.') return '•';
+            if (char === '!') return '❗';
+            if (char === '?') return '❓';
+            return stylizedChars[char] || char;
+        })
+        .join('');
+    
+    try {
+        // Extract channel ID and message ID from link
+        const linkParts = link.split('/');
+        const channelId = linkParts[4];
+        const messageId = linkParts[5];
+        
+        if (!channelId || !messageId) {
+            return await conn.sendMessage(from, {
+                text: `❌ Invalid link - missing channel or message ID`,
+                contextInfo: getContextInfo({ sender: sender })
+            }, { quoted: fakevCard });
+        }
+        
+        // Get channel metadata
+        const channelMeta = await conn.newsletterMetadata("invite", channelId);
+        
+        // Send reaction
+        await conn.newsletterReactMessage(channelMeta.id, messageId, emoji);
+        
+        // Success message
+        await conn.sendMessage(from, {
+            text: `┏━❑ CHANNEL REACTION ━━━━━━━━
+┃ ✅ Reaction sent successfully!
+┃ ━━━━━━━━━━━━━━━━━━━━━━
+┃ 📢 Channel: ${channelMeta.name || 'Unknown'}
+┃ 🔤 Text: ${inputText}
+┃ ✨ Reaction: ${emoji}
+┃ 🆔 Channel ID: ${channelId}
+┃ 📝 Message ID: ${messageId}
+┗━━━━━━━━━━━━━━━━━━━━━━━━`,
+            contextInfo: getContextInfo({ sender: sender })
+        }, { quoted: fakevCard });
+        
+    } catch (e) {
+        if (e.message.includes('not found') || e.message.includes('404')) {
+            await conn.sendMessage(from, {
+                text: `❌ Channel or message not found\n\nPlease check the link and try again`,
+                contextInfo: getContextInfo({ sender: sender })
+            }, { quoted: fakevCard });
+        } else if (e.message.includes('permission') || e.message.includes('access')) {
+            await conn.sendMessage(from, {
+                text: `❌ No permission to react\n\nBot needs to be a member of the channel`,
+                contextInfo: getContextInfo({ sender: sender })
+            }, { quoted: fakevCard });
+        } else {
+            await conn.sendMessage(from, {
+                text: `❌ Failed to send reaction\n\nError: ${e.message}`,
+                contextInfo: getContextInfo({ sender: sender })
+            }, { quoted: fakevCard });
+        }
+        l(e);
+    }
+    
+} catch (e) {
+    await conn.sendMessage(from, {
+        text: `❌ Command failed`,
+        contextInfo: getContextInfo({ sender: sender })
+    }, { quoted: fakevCard });
+    l(e);
+}
+});
+
+// Additional command for channel info
+cmd({
+    pattern: "channelinfo",
+    alias: ["cinfo", "channel"],
+    react: "📋",
+    desc: "Get channel information",
+    category: "owner",
+    filename: __filename
+},
+async(conn, mek, m, {from, prefix, l, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
+try{
+    if (!isOwner) {
+        return await conn.sendMessage(from, {
+            text: `❌ This command is only for bot owner`,
+            contextInfo: getContextInfo({ sender: sender })
+        }, { quoted: fakevCard });
+    }
+    
+    if (!q) {
+        return await conn.sendMessage(from, {
+            text: `❌ Please provide a channel link\n\nExample: ${prefix}channelinfo https://whatsapp.com/channel/1234567890`,
+            contextInfo: getContextInfo({ sender: sender })
+        }, { quoted: fakevCard });
+    }
+    
+    if (!q.includes("whatsapp.com/channel/")) {
+        return await conn.sendMessage(from, {
+            text: `❌ Invalid channel link`,
+            contextInfo: getContextInfo({ sender: sender })
+        }, { quoted: fakevCard });
+    }
+    
+    try {
+        const channelId = q.split('/')[4];
+        const channelMeta = await conn.newsletterMetadata("invite", channelId);
+        
+        await conn.sendMessage(from, {
+            text: `┏━❑ CHANNEL INFO ━━━━━━━━━━━━━━━
+┃ 📢 Name: ${channelMeta.name || 'Unknown'}
+┃ 🆔 ID: ${channelMeta.id || channelId}
+┃ 📝 Description: ${channelMeta.description || 'No description'}
+┃ 👥 Subscribers: ${channelMeta.subscribers || 'Unknown'}
+┃ 👑 Owner: ${channelMeta.owner || 'Unknown'}
+┃ 📅 Created: ${channelMeta.creation || 'Unknown'}
+┃ 🔗 Link: ${q}
+┗━━━━━━━━━━━━━━━━━━━━━━━━`,
+            contextInfo: getContextInfo({ sender: sender })
+        }, { quoted: fakevCard });
+        
+    } catch (e) {
+        await conn.sendMessage(from, {
+            text: `❌ Failed to fetch channel info\n\nError: ${e.message}`,
+            contextInfo: getContextInfo({ sender: sender })
+        }, { quoted: fakevCard });
+        l(e);
+    }
+});
+});

@@ -1,0 +1,254 @@
+// JAMALI MD - AI Commands (OpenAI, GPT, Copilot, DeepSeek, Advanced)
+
+const { cmd } = require('../momy');
+const axios = require('axios');
+
+cmd({
+    pattern: "openai",
+    alias: ["chatgpt", "jamalai", "open-gpt"],
+    desc: "Chat with OpenAI",
+    category: "ai",
+    react: "🧠",
+    filename: __filename
+}, async (conn, mek, m, { from, reply, args, myquoted }) => {
+    try {
+        const text = args.join(" ");
+        
+        if (!text) {
+            return reply("🤖 *JAMALI MD - OpenAI*\n\nUsage: .openai your message\nExample: .openai Hello, how are you?\n\n> 🔥 Powered by JAMALI TECH TZ");
+        }
+
+        await reply("⏳ Asking OpenAI...");
+
+        const apiUrl = `https://vapis.my.id/api/openai?q=${encodeURIComponent(text)}`;
+        const { data } = await axios.get(apiUrl);
+
+        if (!data || !data.result) {
+            await m.react("❌");
+            return reply("❌ OpenAI failed to respond\n\n> 🔥 Powered by JAMALI TECH TZ");
+        }
+
+        await conn.sendMessage(from, {
+            text: data.result + "\n\n> 🔥 Powered by JAMALI TECH TZ"
+        }, { quoted: myquoted });
+
+        await m.react("✅");
+
+    } catch (e) {
+        console.error("Error in OpenAI command:", e);
+        await m.react("❌");
+        reply("❌ An error occurred with OpenAI\n\n> 🔥 Powered by JAMALI TECH TZ");
+    }
+});
+
+cmd({
+    pattern: "jamaliai",
+    alias: ["bot", "dj", "gpt", "gpt4", "bing"],
+    desc: "Chat with JAMALI AI model",
+    category: "ai",
+    react: "🤖",
+    filename: __filename
+}, async (conn, mek, m, { from, reply, args, myquoted }) => {
+    try {
+        const text = args.join(" ");
+        
+        if (!text) {
+            return reply("🤖 *JAMALI MD - AI Chatbot*\n\nUsage: .jamaliai your message\nExample: .jamaliai What is artificial intelligence?\n\n> 🔥 Powered by JAMALI TECH TZ");
+        }
+
+        await reply("⏳ Asking JAMALI AI...");
+
+        const apiUrl = `https://lance-frank-asta.onrender.com/api/gpt?q=${encodeURIComponent(text)}`;
+        const { data } = await axios.get(apiUrl);
+
+        if (!data || !data.message) {
+            await m.react("❌");
+            return reply("❌ AI failed to respond\n\n> 🔥 Powered by JAMALI TECH TZ");
+        }
+
+        await conn.sendMessage(from, {
+            text: data.message + "\n\n> 🔥 Powered by JAMALI TECH TZ"
+        }, { quoted: myquoted });
+
+        await m.react("✅");
+
+    } catch (e) {
+        console.error("Error in AI command:", e);
+        await m.react("❌");
+        reply("❌ An error occurred with AI\n\n> 🔥 Powered by JAMALI TECH TZ");
+    }
+});
+
+cmd({
+    pattern: "deepseek",
+    alias: ["deep", "seekai"],
+    desc: "Chat with DeepSeek AI",
+    category: "ai",
+    react: "👾",
+    filename: __filename
+}, async (conn, mek, m, { from, reply, args, myquoted }) => {
+    try {
+        const text = args.join(" ");
+        
+        if (!text) {
+            return reply("👾 *JAMALI MD - DeepSeek AI*\n\nUsage: .deepseek your message\nExample: .deepseek Explain quantum physics\n\n> 🔥 Powered by JAMALI TECH TZ");
+        }
+
+        await reply("⏳ Asking DeepSeek...");
+
+        const apiUrl = `https://api.ryzendesu.vip/api/ai/deepseek?text=${encodeURIComponent(text)}`;
+        const { data } = await axios.get(apiUrl);
+
+        if (!data || !data.answer) {
+            await m.react("❌");
+            return reply("❌ DeepSeek AI failed to respond\n\n> 🔥 Powered by JAMALI TECH TZ");
+        }
+
+        await conn.sendMessage(from, {
+            text: data.answer + "\n\n> 🔥 Powered by JAMALI TECH TZ"
+        }, { quoted: myquoted });
+
+        await m.react("✅");
+
+    } catch (e) {
+        console.error("Error in DeepSeek AI command:", e);
+        await m.react("❌");
+        reply("❌ An error occurred with DeepSeek\n\n> 🔥 Powered by JAMALI TECH TZ");
+    }
+});
+
+// GPT-5 Command
+cmd({
+    pattern: "ai",
+    alias: ["gpt5", "gpt5plus"],
+    desc: "Chat with JAMALI GPT-5 AI",
+    category: "ai",
+    react: "🚀",
+    filename: __filename
+}, async (conn, mek, m, { from, reply, args, myquoted }) => {
+    try {
+        const text = args.join(" ");
+        
+        if (!text) {
+            return reply("🚀 *JAMALI MD - GPT-5 AI*\n\nUsage: .ai your message\nExample: .ai Write me a poem about nature\n\n> 🔥 Powered by JAMALI TECH TZ");
+        }
+
+        await reply("⏳ Asking GPT-5...");
+
+        const apiUrl = `https://api.yupra.my.id/api/ai/gpt5?q=${encodeURIComponent(text)}`;
+        const { data } = await axios.get(apiUrl);
+
+        if (!data || !data.response) {
+            await m.react("❌");
+            return reply("❌ GPT-5 failed to respond\n\n> 🔥 Powered by JAMALI TECH TZ");
+        }
+
+        await conn.sendMessage(from, {
+            text: data.response + "\n\n> 🔥 Powered by JAMALI TECH TZ"
+        }, { quoted: myquoted });
+
+        await m.react("✅");
+
+    } catch (e) {
+        console.error("Error in GPT-5 command:", e);
+        await m.react("❌");
+        reply("❌ An error occurred with GPT-5\n\n> 🔥 Powered by JAMALI TECH TZ");
+    }
+});
+
+// Copilot Command
+cmd({
+    pattern: "copilot",
+    alias: ["think", "copilotai", "microsoftai"],
+    desc: "Chat with Microsoft Copilot AI",
+    category: "ai",
+    react: "💻",
+    filename: __filename
+}, async (conn, mek, m, { from, reply, args, myquoted }) => {
+    try {
+        const text = args.join(" ");
+        
+        if (!text) {
+            return reply("💻 *JAMALI MD - Microsoft Copilot AI*\n\nUsage: .copilot your message\nExample: .copilot Help me write code in JavaScript\n\n> 🔥 Powered by JAMALI TECH TZ");
+        }
+
+        await reply("⏳ Asking Copilot...");
+
+        const apiUrl = `https://api.yupra.my.id/api/ai/copilot-think?q=${encodeURIComponent(text)}`;
+        const { data } = await axios.get(apiUrl);
+
+        if (!data || !data.response) {
+            await m.react("❌");
+            return reply("❌ Copilot failed to respond\n\n> 🔥 Powered by JAMALI TECH TZ");
+        }
+
+        await conn.sendMessage(from, {
+            text: data.response + "\n\n> 🔥 Powered by JAMALI TECH TZ"
+        }, { quoted: myquoted });
+
+        await m.react("✅");
+
+    } catch (e) {
+        console.error("Error in Copilot command:", e);
+        await m.react("❌");
+        reply("❌ An error occurred with Copilot\n\n> 🔥 Powered by JAMALI TECH TZ");
+    }
+});
+
+// Advanced AI Command
+cmd({
+    pattern: "advai",
+    alias: ["advancedai", "smartai", "superai"],
+    desc: "Advanced AI with multiple model fallback",
+    category: "ai",
+    react: "⚡",
+    filename: __filename
+}, async (conn, mek, m, { from, reply, args, myquoted }) => {
+    try {
+        const text = args.join(" ");
+        
+        if (!text) {
+            return reply("⚡ *JAMALI MD - Advanced AI*\n\nUsage: .advai your message\nExample: .advai Solve this math problem\n\n> 🔥 Powered by JAMALI TECH TZ");
+        }
+
+        await reply("⏳ Processing with advanced AI...");
+
+        let response = null;
+        
+        // Try multiple APIs in sequence
+        const apis = [
+            { url: `https://api.yupra.my.id/api/ai/gpt5?q=${encodeURIComponent(text)}`, key: 'response' },
+            { url: `https://lance-frank-asta.onrender.com/api/gpt?q=${encodeURIComponent(text)}`, key: 'message' },
+            { url: `https://vapis.my.id/api/openai?q=${encodeURIComponent(text)}`, key: 'result' },
+            { url: `https://api.yupra.my.id/api/ai/copilot-think?q=${encodeURIComponent(text)}`, key: 'response' }
+        ];
+
+        for (let api of apis) {
+            try {
+                const { data } = await axios.get(api.url);
+                if (data && data[api.key]) {
+                    response = data[api.key];
+                    break;
+                }
+            } catch (e) {
+                continue;
+            }
+        }
+
+        if (!response) {
+            await m.react("❌");
+            return reply("❌ All AI services failed to respond\n\n> 🔥 Powered by JAMALI TECH TZ");
+        }
+
+        await conn.sendMessage(from, {
+            text: response + "\n\n> 🔥 Powered by JAMALI TECH TZ"
+        }, { quoted: myquoted });
+
+        await m.react("✅");
+
+    } catch (e) {
+        console.error("Error in Advanced AI command:", e);
+        await m.react("❌");
+        reply("❌ An error occurred with Advanced AI\n\n> 🔥 Powered by JAMALI TECH TZ");
+    }
+});
