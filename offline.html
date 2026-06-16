@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOMY-KIDY | Offline</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #0a0f1a 50%, #000428 100%);
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .offline-container {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .offline-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00f6ff, #b400ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        p {
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+        
+        .retry-btn {
+            background: linear-gradient(135deg, #00f6ff, #b400ff);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 246, 255, 0.3);
+        }
+        
+        .home-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px 30px;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-left: 10px;
+        }
+        
+        .home-btn:hover {
+            background: rgba(0, 246, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">
+            📡
+        </div>
+        <h1>Connection Issue</h1>
+        <p>Unable to connect to the server.<br>Please check your internet connection or try again later.</p>
+        <div>
+            <button class="retry-btn" onclick="location.reload()">
+                <i class="fas fa-sync-alt"></i> Try Again
+            </button>
+            <button class="home-btn" onclick="window.location.href='/dashboard'">
+                <i class="fas fa-home"></i> Go to Dashboard
+            </button>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+</body>
+</html>

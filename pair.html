@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#050816" />
+<title>⚡ JAMALI MD • Ultra Pair</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+
+:root{
+  --bg:#060816;
+  --card:rgba(255,255,255,0.06);
+  --cyan:#00f0ff;
+  --green:#00ffae;
+  --purple:#b100ff;
+  --gold:#ffd700;
+  --white:#ffffff;
+  --shadow:0 0 40px rgba(0,240,255,.25);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  min-height:100vh;
+  overflow:hidden;
+  background:
+  radial-gradient(circle at top left, rgba(177,0,255,.25), transparent 35%),
+  radial-gradient(circle at bottom right, rgba(0,240,255,.2), transparent 35%),
+  linear-gradient(135deg,#050816,#090b18,#13052b);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Rajdhani',sans-serif;
+  color:white;
+  position:relative;
+}
+
+body::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:url('https://www.transparenttextures.com/patterns/stardust.png');
+  opacity:.15;
+}
+
+.grid{
+  position:absolute;
+  inset:0;
+  background-image:
+  linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size:35px 35px;
+  mask-image:linear-gradient(to bottom, transparent, black, transparent);
+}
+
+.orb{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(70px);
+  animation:float 8s ease-in-out infinite;
+}
+
+.orb.one{
+  width:220px;
+  height:220px;
+  background:rgba(177,0,255,.35);
+  top:-60px;
+  left:-60px;
+}
+
+.orb.two{
+  width:250px;
+  height:250px;
+  background:rgba(0,240,255,.25);
+  right:-90px;
+  bottom:-90px;
+  animation-delay:2s;
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-20px)}
+}
+
+.container{
+  width:92%;
+  max-width:430px;
+  padding:28px;
+  border-radius:34px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  backdrop-filter:blur(28px);
+  box-shadow:
+  0 0 60px rgba(0,0,0,.5),
+  0 0 80px rgba(0,240,255,.12),
+  inset 0 1px 0 rgba(255,255,255,.08);
+  position:relative;
+  z-index:10;
+  overflow:hidden;
+}
+
+.container::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,.06), transparent);
+  pointer-events:none;
+}
+
+.top-badge{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  width:max-content;
+  margin:auto;
+  padding:8px 16px;
+  border-radius:999px;
+  background:rgba(255,215,0,.08);
+  border:1px solid rgba(255,215,0,.25);
+  color:var(--gold);
+  font-size:.72rem;
+  letter-spacing:2px;
+  margin-bottom:22px;
+  animation:glow 2s infinite;
+}
+
+@keyframes glow{
+  0%,100%{box-shadow:0 0 10px rgba(255,215,0,.2)}
+  50%{box-shadow:0 0 25px rgba(255,215,0,.45)}
+}
+
+.logo{
+  text-align:center;
+  margin-bottom:10px;
+}
+
+.logo h1{
+  font-family:'Orbitron',sans-serif;
+  font-size:2.4rem;
+  font-weight:900;
+  background:linear-gradient(90deg,var(--cyan),var(--purple),var(--green));
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:shine 5s linear infinite;
+}
+
+@keyframes shine{
+  to{background-position:200% center}
+}
+
+.subtitle{
+  text-align:center;
+  opacity:.7;
+  letter-spacing:3px;
+  font-size:.82rem;
+  margin-bottom:22px;
+}
+
+.live-status{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:25px;
+}
+
+.live-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 12px var(--green);
+  animation:pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+  50%{transform:scale(.7);opacity:.5}
+}
+
+.panel{
+  background:rgba(0,0,0,.28);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:22px;
+  padding:16px;
+  margin-bottom:18px;
+}
+
+.owner-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+}
+
+.owner-info{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.owner-info span{
+  opacity:.7;
+  font-size:.9rem;
+}
+
+.owner-info strong{
+  color:white;
+  font-size:1rem;
+  font-weight:700;
+}
+
+.owner-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-width:140px;
+  height:48px;
+  padding:0 18px;
+  border-radius:16px;
+  text-decoration:none;
+  font-weight:800;
+  font-size:.82rem;
+  background:linear-gradient(135deg,#00ffae,#00f0ff);
+  color:#04141c !important;
+  transition:.35s ease;
+  box-shadow:
+  0 10px 25px rgba(0,255,174,.18),
+  0 0 25px rgba(0,240,255,.1);
+}
+
+.owner-btn:hover{
+  transform:translateY(-4px) scale(1.03);
+  box-shadow:
+  0 15px 35px rgba(0,255,174,.3),
+  0 0 30px rgba(0,240,255,.2);
+}
+
+.channel-box{
+  margin-top:18px;
+  background:linear-gradient(135deg, rgba(0,240,255,.12), rgba(177,0,255,.14));
+  border:1px solid rgba(0,240,255,.18);
+  border-radius:18px;
+  padding:16px;
+  text-align:center;
+}
+
+.channel-box p{
+  font-size:.95rem;
+  line-height:1.6;
+}
+
+.channel-box a{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  margin-top:14px;
+  text-decoration:none;
+  color:white;
+  background:linear-gradient(90deg,var(--green),var(--cyan));
+  padding:12px 20px;
+  border-radius:14px;
+  font-weight:700;
+  transition:.3s;
+}
+
+.channel-box a:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--shadow);
+}
+
+.input-box{
+  position:relative;
+  margin:24px 0 18px;
+}
+
+.input-box i{
+  position:absolute;
+  left:18px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--green);
+}
+
+input{
+  width:100%;
+  height:64px;
+  border:none;
+  outline:none;
+  border-radius:20px;
+  padding:0 20px 0 55px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(10px);
+  color:var(--green);
+  font-size:1.05rem;
+  font-weight:700;
+  transition:.35s ease;
+}
+
+input:focus{
+  border-color:rgba(0,255,174,.7);
+  background:rgba(255,255,255,.06);
+  box-shadow:
+  0 0 30px rgba(0,255,174,.15),
+  0 0 60px rgba(0,255,174,.08);
+}
+
+input::placeholder{
+  color:rgba(255,255,255,.35);
+}
+
+.main-btn{
+  width:100%;
+  height:62px;
+  border:none;
+  border-radius:20px;
+  cursor:pointer;
+  font-family:'Orbitron',sans-serif;
+  font-size:.95rem;
+  font-weight:800;
+  letter-spacing:2px;
+  color:white;
+  background:linear-gradient(135deg,#00f0ff,#7b2dff,#00f0ff);
+  background-size:250% auto;
+  transition:.4s ease;
+  position:relative;
+  overflow:hidden;
+}
+
+.main-btn:hover{
+  transform:translateY(-5px);
+  background-position:right center;
+}
+
+.result-box{
+  margin-top:24px;
+  background:linear-gradient(
+    135deg,
+    rgba(255,255,255,.04),
+    rgba(255,255,255,.02)
+  );
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:24px;
+  padding:24px;
+  text-align:center;
+  cursor:pointer;
+  transition:.35s ease;
+  backdrop-filter:blur(14px);
+}
+
+.result-box:hover{
+  transform:translateY(-4px) scale(1.02);
+  border-color:rgba(177,0,255,.4);
+}
+
+.result-title{
+  font-size:.7rem;
+  letter-spacing:3px;
+  opacity:.6;
+  margin-bottom:12px;
+}
+
+#result{
+  font-family:'Orbitron',sans-serif;
+  font-size:1.7rem;
+  color:var(--purple);
+  letter-spacing:6px;
+}
+
+.copy{
+  margin-top:10px;
+  font-size:.8rem;
+  opacity:.5;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:18px;
+}
+
+.actions button{
+  height:48px;
+  border:none;
+  border-radius:14px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  color:white;
+  cursor:pointer;
+}
+
+.footer{
+  text-align:center;
+  margin-top:25px;
+  font-size:.8rem;
+  letter-spacing:2px;
+  opacity:.6;
+}
+
+.toast{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%) translateY(120px);
+  background:rgba(0,0,0,.8);
+  border:1px solid rgba(0,240,255,.3);
+  color:white;
+  padding:14px 24px;
+  border-radius:14px;
+  transition:.4s;
+  z-index:999;
+}
+
+.toast.show{
+  transform:translateX(-50%) translateY(0);
+}
+
+</style>
+</head>
+<body>
+
+<div class="grid"></div>
+
+<div class="orb one"></div>
+<div class="orb two"></div>
+
+<audio id="bgMusic" src="https://files.catbox.moe/iwpfp2.mp3" loop></audio>
+
+<div class="container">
+
+<div class="top-badge">
+<i class="fa-solid fa-crown"></i>
+PREMIUM SYSTEM 2026
+</div>
+
+<div class="logo">
+<h1>JAMALI MD</h1>
+</div>
+
+<div class="subtitle">
+ULTRA LUXURY PAIR SYSTEM
+</div>
+
+<div class="live-status">
+<div class="live-dot"></div>
+<span>SYSTEM ONLINE • SECURE CONNECTION</span>
+</div>
+
+<div class="panel">
+
+<div class="owner-row">
+
+<div class="owner-info">
+<span>
+<i class="fa-solid fa-user-shield"></i>
+OWNER
+</span>
+
+<strong>JAMALI TECH TZ</strong>
+</div>
+
+<a
+class="owner-btn"
+href="https://wa.me/255784062158?text=Hi%20jamali%20tech%20i%20need%20help%20for%20your%20bot"
+target="_blank"
+>
+
+<i class="fa-brands fa-whatsapp"></i>
+CHAT NOW
+
+</a>
+
+</div>
+
+</div>
+
+<div class="channel-box">
+
+<p>
+Follow the <strong>𝗝𝗔𝗠𝗔𝗟𝗜 𝗧𝗘𝗖𝗛 𝗘𝗠𝗣𝗜𝗥𝗘</strong>
+channel on WhatsApp for premium updates,
+bots, apps, pair systems, luxury UI designs & more.
+</p>
+
+<a
+href="https://whatsapp.com/channel/0029VbC7AgJK5cD71vGIpO3h"
+target="_blank"
+>
+
+<i class="fa-brands fa-whatsapp"></i>
+JOIN OFFICIAL CHANNEL
+
+</a>
+
+</div>
+
+<div class="input-box">
+
+<i class="fa-solid fa-mobile-screen-button"></i>
+
+<input
+type="tel"
+id="number"
+placeholder="Enter number with country code e.g. 255784062158"
+autocomplete="off"
+/>
+
+</div>
+
+<button class="main-btn" id="pairBtn">
+⚡ GENERATE PAIR CODE
+</button>
+
+<div class="result-box" onclick="copyCode()">
+
+<div class="result-title">
+GENERATED CODE
+</div>
+
+<div id="result">
+---
+</div>
+
+<div class="copy">
+Tap to copy
+</div>
+
+</div>
+
+<div class="actions">
+
+<button onclick="toggleMusic()">
+<i class="fa-solid fa-music"></i>
+</button>
+
+<button onclick="refreshPage()">
+<i class="fa-solid fa-rotate"></i>
+</button>
+
+<button onclick="toggleTheme()">
+<i class="fa-solid fa-star"></i>
+</button>
+
+</div>
+
+<div class="footer">
+⚡ POWERED BY JAMALI TECH TZ • 2026
+</div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+
+let music = false;
+let dark = true;
+let generating = false;
+
+function toast(msg){
+
+const t = document.getElementById('toast');
+
+t.innerText = msg;
+
+t.classList.add('show');
+
+setTimeout(() => {
+t.classList.remove('show');
+}, 3000);
+
+}
+
+function toggleMusic(){
+
+const audio = document.getElementById('bgMusic');
+
+if(!music){
+
+audio.play().catch(e => console.log);
+
+music = true;
+
+toast('🎵 Music Enabled');
+
+}else{
+
+audio.pause();
+
+music = false;
+
+toast('⏸ Music Disabled');
+
+}
+
+}
+
+function refreshPage(){
+location.reload();
+}
+
+function toggleTheme(){
+
+dark = !dark;
+
+if(!dark){
+
+document.body.style.background =
+'linear-gradient(135deg,#edf7ff,#d8eeff,#f6f7ff)';
+
+toast('☀ Light Mode');
+
+}else{
+
+document.body.style.background =
+'linear-gradient(135deg,#050816,#090b18,#13052b)';
+
+toast('🌙 Dark Mode');
+
+}
+
+}
+
+async function getCode(){
+
+if(generating) return;
+
+let number =
+document.getElementById('number')
+.value.replace(/\D/g,'');
+
+let resultDiv =
+document.getElementById('result');
+
+let btn =
+document.getElementById('pairBtn');
+
+if(number.length < 9){
+
+resultDiv.innerText = 'INVALID';
+
+toast('❌ Enter valid number');
+
+return;
+
+}
+
+generating = true;
+
+btn.innerHTML = '⏳ PROCESSING...';
+
+resultDiv.innerText = '...';
+
+try{
+
+const response =
+await fetch(`/code?number=${number}&_=${Date.now()}`);
+
+const data =
+await response.json();
+
+if(data.code){
+
+resultDiv.innerText = data.code;
+
+toast('✅ Pair code generated');
+
+}else{
+
+resultDiv.innerText = 'RETRY';
+
+toast('⚠ Retry again');
+
+}
+
+}catch(err){
+
+console.error(err);
+
+resultDiv.innerText = 'ERROR';
+
+toast('⚠ Server error');
+
+}
+
+btn.innerHTML = '⚡ GENERATE PAIR CODE';
+
+generating = false;
+
+}
+
+function copyCode(){
+
+let code =
+document.getElementById('result').innerText;
+
+if(
+code === '---' ||
+code === 'INVALID' ||
+code === 'RETRY' ||
+code === 'ERROR' ||
+code === '...'
+){
+
+toast('⚠ No valid code');
+
+return;
+
+}
+
+navigator.clipboard.writeText(code);
+
+toast('📋 Code copied');
+
+}
+
+document.getElementById('pairBtn').onclick = getCode;
+
+</script>
+
+</body>
+</html>
